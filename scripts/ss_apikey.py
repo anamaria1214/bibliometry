@@ -5,19 +5,19 @@ from datetime import datetime
 
 BASE_URL = "https://api.semanticscholar.org/graph/v1/paper/search"
 
+API_KEY = "TU_API_KEY_AQUI"
+
 FIELDS = "title,authors,year,url,abstract"
 
 def search_semantic_scholar(query, limit=100, offset=0):
-    """
-    Realiza una búsqueda en Semantic Scholar.
-    """
+    headers = {"x-api-key": API_KEY} if API_KEY else {}
     params = {
         "query": query,
         "limit": limit,
         "offset": offset,
         "fields": FIELDS
     }
-    response = requests.get(BASE_URL, params=params)
+    response = requests.get(BASE_URL, headers=headers, params=params)
     if response.status_code == 200:
         return response.json()
     else:
@@ -25,11 +25,7 @@ def search_semantic_scholar(query, limit=100, offset=0):
         return None
 
 def save_to_bib(data, output_dir="data/raw"):
-    """
-    Guarda los resultados en un archivo .bib dentro de /data/raw
-    """
     Path(output_dir).mkdir(parents=True, exist_ok=True)
-
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = Path(output_dir) / f"semantic_scholar_{timestamp}.bib"
 
@@ -41,7 +37,6 @@ def save_to_bib(data, output_dir="data/raw"):
             url = paper.get("url", "")
             abstract = paper.get("abstract", "")
 
-            # Generar clave (ej: FirstAuthorYear)
             key = f"{authors.split()[0]}{year}" if authors else f"paper{idx}"
 
             f.write(f"@article{{{key},\n")
@@ -56,37 +51,39 @@ def save_to_bib(data, output_dir="data/raw"):
                 f.write(f"  abstract = {{{abstract}}},\n")
             f.write("}\n\n")
 
-    print(f"Done! {len(data)} papers saved in '{filename}'")
+    print(f"\n Done! {len(data)} papers saved in '{filename}'")
 
 def main():
     query = input("Enter your search term: ")
-    max_results = int(input("Enter number of results (e.g. 200): "))
     results = []
+    offset = 0
+    total = None
 
     print(f"Searching Semantic Scholar for '{query}'...")
 
-    # Paginación
-    offset = 0
-    while offset < max_results:
+    while True:
         batch = search_semantic_scholar(query, limit=100, offset=offset)
         if batch and "data" in batch:
             papers = batch["data"]
-            results.extend(papers)
-            print(f"Downloaded {len(results)} papers...")
+            if total is None:
+                total = batch.get("total", len(papers))
+                print(f"Total results available: {total}")
 
-            if len(papers) == 0:
+            results.extend(papers)
+            print(f"Downloaded {len(results)}/{total} papers...")
+
+            if len(results) >= total or len(papers) == 0:
                 break
         else:
             break
 
         offset += 100
-        time.sleep(1)  # evitar saturar API
+        time.sleep(1)
 
-    # Guardar en .bib
     if results:
         save_to_bib(results)
     else:
-        print("No papers found.")
+        print("\n No papers found.")
 
 if __name__ == "__main__":
     main()
