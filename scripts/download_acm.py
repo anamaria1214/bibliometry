@@ -9,30 +9,25 @@ import shutil
 import time
 import os
 
-def scrape_acm_bibtex(start_page: int):
+def download_acm(start_page: int):
     """
-    Launches a headless Firefox browser, navigates to ACM Digital Library,
-    accepts cookies, selects all results on the page, and downloads citations in BibTeX format
-    Args:
-        start_page (int): Page number to start the search from
+    Inicia un navegador Firefox sin interfaz gráfica, navega a ACM Digital Library,
+    acepta cookies, selecciona todos los resultados de la página y descarga las citas en formato BibTeX
     """
     download_dir = str(Path("downloads").resolve())
     output_dir = Path("data/raw")
     Path(download_dir).mkdir(parents=True, exist_ok=True)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Configure Firefox download settings
     firefox_options = Options()
     firefox_options.set_preference("browser.download.folderList", 2)
     firefox_options.set_preference("browser.download.dir", download_dir)
     firefox_options.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/plain, application/x-bibtex")
     firefox_options.set_preference("pdfjs.disabled", True)
 
-    # Start browser
     driver = webdriver.Firefox(options=firefox_options)
     wait = WebDriverWait(driver, 10)
 
-    # Go to ACM page
     url = f"https://dl.acm.org/action/doSearch?AllField=generative+artificial+intelligence&startPage={start_page}&pageSize=50"
     driver.get(url)
 
@@ -81,10 +76,8 @@ def scrape_acm_bibtex(start_page: int):
     finally:
         driver.quit()
 
-
 if __name__ == "__main__":
     try:
-        page = int(input("Enter start page (e.g. 0, 1, 2...): "))
-        scrape_acm_bibtex(page)
+        download_acm(1)
     except ValueError:
-        print("Invalid input. Please enter a number")
+        print("Error con el inicio de la página")
