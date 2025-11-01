@@ -215,8 +215,8 @@ def download_semantic_scholar(search_query: str = "generative artificial intelli
             f.write(bibtex_content)
         
         entries_count = bibtex_content.count('@')
-        print(f"✓ Archivo guardado: {output_file}")
-        print(f"✓ Total de entradas: {entries_count}")
+        print(f"Archivo guardado: {output_file}")
+        print(f"Total de entradas: {entries_count}")
         
     except Exception as e:
         print(f"\n✗ Error: {e}")

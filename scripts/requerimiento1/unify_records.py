@@ -52,7 +52,6 @@ def unify_bib_files():
     input_dirs = [
         "data/raw/IEEE",
         "data/raw/SemanticScholar",
-        "data/raw/Arxiv"
     ]
 
     print("Leyendo archivos .bib...")
