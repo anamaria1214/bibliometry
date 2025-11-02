@@ -1,0 +1,49 @@
+Category: Concepts of Generative AI in Education
+Seed terms (count): 15
+
+--- Seed frequency summary ---
+                              category            seed_term  total_occurrences  num_abstracts_with_term
+Concepts of Generative AI in Education    Generative models               1106                      846
+Concepts of Generative AI in Education            Prompting                  4                        4
+Concepts of Generative AI in Education     Machine learning                564                      521
+Concepts of Generative AI in Education        Multimodality                  3                        1
+Concepts of Generative AI in Education          Fine-tuning                 10                        8
+Concepts of Generative AI in Education        Training data                598                      521
+Concepts of Generative AI in Education     Algorithmic bias                 72                       68
+Concepts of Generative AI in Education       Explainability                 16                       15
+Concepts of Generative AI in Education         Transparency                 59                       52
+Concepts of Generative AI in Education               Ethics                 60                       43
+Concepts of Generative AI in Education              Privacy                155                       99
+Concepts of Generative AI in Education      Personalization                 30                       23
+Concepts of Generative AI in Education Human-AI interaction                 96                       93
+Concepts of Generative AI in Education          AI literacy                857                      816
+Concepts of Generative AI in Education          Co-creation                 11                        6
+
+--- Auto-discovered terms ---
+{"term": "intelligence", "tfidf_sum": 30.070738968815977, "doc_freq": 918, "col_index": 4135, "best_seed_match": "Machine learning", "max_similarity_to_seed": 0.26099617200198977}
+{"term": "generative ai", "tfidf_sum": 29.24796038296816, "doc_freq": 357, "col_index": 3383, "best_seed_match": "Privacy", "max_similarity_to_seed": 0.128504757999524}
+{"term": "artificial", "tfidf_sum": 29.17190122279779, "doc_freq": 910, "col_index": 921, "best_seed_match": "Machine learning", "max_similarity_to_seed": 0.27386588463188166}
+{"term": "artificial intelligence", "tfidf_sum": 28.08395462297287, "doc_freq": 896, "col_index": 925, "best_seed_match": "Machine learning", "max_similarity_to_seed": 0.25802610677668647}
+{"term": "research", "tfidf_sum": 23.721377621119192, "doc_freq": 498, "col_index": 5941, "best_seed_match": "Machine learning", "max_similarity_to_seed": 0.15705459853966966}
+{"term": "education", "tfidf_sum": 22.300841250044158, "doc_freq": 265, "col_index": 2425, "best_seed_match": "AI literacy", "max_similarity_to_seed": 0.20037274058630977}
+{"term": "study", "tfidf_sum": 21.55494079130646, "doc_freq": 459, "col_index": 6865, "best_seed_match": "AI literacy", "max_similarity_to_seed": 0.14536806932231816}
+{"term": "paper", "tfidf_sum": 20.45277804348838, "doc_freq": 441, "col_index": 5077, "best_seed_match": "Machine learning", "max_similarity_to_seed": 0.21074107214168494}
+{"term": "design", "tfidf_sum": 19.489772650748304, "doc_freq": 201, "col_index": 2151, "best_seed_match": "Human-AI interaction", "max_similarity_to_seed": 0.0935005209594699}
+{"term": "students", "tfidf_sum": 19.072396279502424, "doc_freq": 174, "col_index": 6829, "best_seed_match": "AI literacy", "max_similarity_to_seed": 0.12049860753772378}
+{"term": "technology", "tfidf_sum": 18.80799581391923, "doc_freq": 351, "col_index": 7182, "best_seed_match": "Human-AI interaction", "max_similarity_to_seed": 0.12365227836568525}
+{"term": "genai", "tfidf_sum": 18.74237695664715, "doc_freq": 79, "col_index": 3290, "best_seed_match": "AI literacy", "max_similarity_to_seed": 0.08820864735237201}
+{"term": "gai", "tfidf_sum": 18.213564318850107, "doc_freq": 73, "col_index": 3224, "best_seed_match": "AI literacy", "max_similarity_to_seed": 0.10155407569029881}
+{"term": "based", "tfidf_sum": 18.02595289447132, "doc_freq": 395, "col_index": 1085, "best_seed_match": "Machine learning", "max_similarity_to_seed": 0.23335381835419092}
+{"term": "tools", "tfidf_sum": 17.878122995795632, "doc_freq": 229, "col_index": 7333, "best_seed_match": "Human-AI interaction", "max_similarity_to_seed": 0.15496750658650651}
+
+--- Precision summary ---
+Similarity threshold (recommended): 0.3
+Auto-discovered terms total: 15
+Auto-discovered terms with similarity >= threshold: 0
+Precision (hits / total): 0.000
+Exact overlap count (term equals seed): 0
+
+Interpretation:
+- Un término se considera 'preciso' si su vector TF-IDF a lo largo del corpus
+  tiene similitud coseno >= 0.3 con algún término semilla.
+- Umbral sugerido 0.30 (valor heurístico). Ajusta si deseas mayor/menor estricticidad.
