@@ -260,21 +260,32 @@ st.write('Cosine (Model 2):', float(cos_emb2[i_idx,j_idx]))
 
 # Export results CSV
 st.header('Exportar resultados')
+
 results = {
-    'pair':[f"{ids[i]}__{ids[j]}" for i in range(n) for j in range(n)],
-    'levenshtein':[int(lev_matrix[i,j]) for i in range(n) for j in range(n)],
-    'jaccard':[float(jaccard_mat[i,j]) for i in range(n) for j in range(n)],
-    'dice':[float(dice_mat[i,j]) for i in range(n) for j in range(n)],
-    'tfidf_cosine':[float(tfidf_sim[i,j]) for i in range(n) for j in range(n)],
-    'emb1_cosine':[float(cos_emb1[i,j]) for i in range(n) for j in range(n)],
-    'emb2_cosine':[float(cos_emb2[i,j]) for i in range(n) for j in range(n)],
+    'pair': [f"{ids[i]}__{ids[j]}" for i in range(n) for j in range(n)],
+    'levenshtein': [int(lev_matrix[i, j]) for i in range(n) for j in range(n)],
+    'jaccard': [float(jaccard_mat[i, j]) for i in range(n) for j in range(n)],
+    'dice': [float(dice_mat[i, j]) for i in range(n) for j in range(n)],
+    'tfidf_cosine': [float(tfidf_sim[i, j]) for i in range(n) for j in range(n)],
+    'emb1_cosine': [float(cos_emb1[i, j]) for i in range(n) for j in range(n)],
+    'emb2_cosine': [float(cos_emb2[i, j]) for i in range(n) for j in range(n)],
 }
 
 df_results = pd.DataFrame(results)
-buf = StringIO()
-df_results.to_csv(buf, index=False)
-buf.seek(0)
-st.download_button('Descargar CSV con resultados', data=buf, file_name='similitud_resultados.csv', mime='text/csv')
+
+# Convertir directamente el DataFrame a CSV (texto plano)
+csv_data = df_results.to_csv(index=False).encode('utf-8')
+
+st.download_button(
+    label='Descargar CSV con resultados',
+    data=csv_data,
+    file_name='similitud_resultados.csv',
+    mime='text/csv'
+)
 
 st.markdown('---')
-st.markdown('**Notas:**\n- Si deseas usar otro archivo .bib, cambia la ruta en la barra lateral.\n- Para ejecutar localmente: `streamlit run similitud_textual_app.py`\n- Revisa los paquetes listados al inicio (sentence-transformers descarga modelos la primera vez).')
+st.markdown('**Notas:**\n'
+            '- Si deseas usar otro archivo .bib, cambia la ruta en la barra lateral.\n'
+            '- Para ejecutar localmente: `streamlit run similitud_textual_app.py`\n'
+            '- Revisa los paquetes listados al inicio (sentence-transformers descarga modelos la primera vez).')
+
