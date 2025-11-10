@@ -12,3 +12,5 @@ output/
 logs/
 temp/
 .DS_Store
+data/analysis/dendrograms
+data/raw
