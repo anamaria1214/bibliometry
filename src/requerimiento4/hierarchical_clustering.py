@@ -32,6 +32,7 @@ try:
     from sentence_transformers import SentenceTransformer
     _HAS_ST = True
 except Exception:
+    SentenceTransformer = None
     _HAS_ST = False
 
 # Calcular la ruta raíz del proyecto
@@ -72,6 +73,7 @@ def compute_tfidf_vectors(docs, max_features=8000, ngram_range=(1,2)):
 def compute_embedding_vectors(docs, model_name='all-MiniLM-L6-v2', batch_size=64):
     if not _HAS_ST:
         raise RuntimeError('sentence-transformers not installed; cannot compute embeddings')
+    assert SentenceTransformer is not None
     model = SentenceTransformer(model_name)
     emb = model.encode(docs, batch_size=batch_size, show_progress_bar=True)
     return np.array(emb), model
@@ -152,9 +154,8 @@ def main(argv=None):
                 # Ward requires Euclidean distances on feature vectors
                 condensed_link = pdist(X, metric='euclidean')
             else:
-                # use cosine distance for single/complete
-                condensed_link = pdist(sim, metric='cosine') if False else pdist(X, metric='cosine')
-                # Using pdist on X with 'cosine' will compute 1 - cosine similarity
+                # Use cosine distance for single/complete (pdist computes 1 - cosine_similarity)
+                condensed_link = pdist(X, metric='cosine')
 
             Z = linkage(condensed_link, method=link)
             # compute cophenetic correlation

@@ -214,7 +214,7 @@ st.markdown("---")
 # Mostrar dendrogramas
 st.subheader("📊 Dendrogramas Generados")
 
-clustering_dir = PROJECT_ROOT / "clustering"
+clustering_dir = PROJECT_ROOT / "data" / "analysis" / "dendrograms"
 
 if clustering_dir.exists():
     # Buscar dendrogramas
@@ -236,7 +236,7 @@ if clustering_dir.exists():
                     
                     try:
                         img = Image.open(latest)
-                        st.image(img, caption=f"Dendrograma: {linkage.capitalize()} Linkage", use_container_width=True)
+                        st.image(img, caption=f"Dendrograma: {linkage.capitalize()} Linkage", width='stretch')
                         logger.info(f"Mostrando dendrograma: {latest}")
                     except Exception as e:
                         st.error(f"Error al cargar imagen: {e}")
