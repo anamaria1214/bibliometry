@@ -5,6 +5,9 @@ import time
 import re
 import pycountry
 
+# Calcular la ruta raíz del proyecto
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+
 
 def _load_cache(cache_path: Path):
     if not cache_path.exists():
@@ -54,11 +57,14 @@ def country_from_affiliation_text(text: str):
     return None
 
 
-def resolve_country_by_doi(doi: str, cache_path: Path = Path('data/analysis/author_country_cache.csv'), use_crossref: bool = True, sleep_between: float = 1.0):
+def resolve_country_by_doi(doi: str, cache_path: Path = None, use_crossref: bool = True, sleep_between: float = 1.0):
     """Intenta resolver el país del primer autor usando Crossref (por DOI). Devuelve nombre del país o None.
 
     Guarda resultados en un CSV cache para evitar llamadas repetidas.
     """
+    if cache_path is None:
+        cache_path = PROJECT_ROOT / 'data/analysis/author_country_cache.csv'
+    
     cache = _load_cache(cache_path)
     if doi in cache:
         return cache[doi]

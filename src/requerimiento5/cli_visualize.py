@@ -1,24 +1,26 @@
 """Interfaz por consola
 
-Se ejecuta con `python -m scripts.requerimiento5.cli_visualize`
+Se ejecuta con `python -m src.requerimiento5.cli_visualize`
 o
-`python scripts/requerimiento5/cli_visualize.py`.
+`python src/requerimiento5/cli_visualize.py`.
 """
 
 from pathlib import Path
 import sys
 
+# Calcular la ruta raíz del proyecto
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+
 # Intentar importaciones de paquete; si fallan (ejecución directa), añadir la raíz del repo a sys.path
 try:
-    from scripts.requerimiento5.extract_metadata import parse_bib_file, save_metadata
-    from scripts.requerimiento5.geolocation import resolve_country_by_doi
-    from scripts.requerimiento5.plots import generate_wordcloud, generate_timeline, generate_map
+    from src.requerimiento5.extract_metadata import parse_bib_file, save_metadata
+    from src.requerimiento5.geolocation import resolve_country_by_doi
+    from src.requerimiento5.plots import generate_wordcloud, generate_timeline, generate_map
 except Exception:
-    repo_root = Path(__file__).resolve().parents[2]
-    sys.path.insert(0, str(repo_root))
-    from scripts.requerimiento5.extract_metadata import parse_bib_file, save_metadata
-    from scripts.requerimiento5.geolocation import resolve_country_by_doi
-    from scripts.requerimiento5.plots import generate_wordcloud, generate_timeline, generate_map
+    sys.path.insert(0, str(PROJECT_ROOT))
+    from src.requerimiento5.extract_metadata import parse_bib_file, save_metadata
+    from src.requerimiento5.geolocation import resolve_country_by_doi
+    from src.requerimiento5.plots import generate_wordcloud, generate_timeline, generate_map
 
 from PIL import Image
 import pandas as pd
@@ -27,7 +29,7 @@ import pandas as pd
 def parse_and_resolve(bib_path: Path, use_crossref: bool = True):
     print('Parseando .bib...')
     df = parse_bib_file(bib_path)
-    metadata_csv = Path('data/analysis/metadata.csv')
+    metadata_csv = PROJECT_ROOT / 'data/analysis/metadata.csv'
     save_metadata(df, metadata_csv)
 
     print('Resolviendo países por DOI (esto puede tardar si hay muchas entradas)')
@@ -62,7 +64,8 @@ def combine_images_to_pdf(img_paths, out_pdf: Path):
 
 def interactive_menu():
     print('\n=== Visualizador de producción científica ===')
-    bib_path = input('Ruta al archivo .bib (por defecto data/processed/unified_references.bib): ').strip() or 'data/processed/unified_references.bib'
+    default_bib = str(PROJECT_ROOT / 'data/processed/unified_references.bib')
+    bib_path = input(f'Ruta al archivo .bib (por defecto {default_bib}): ').strip() or default_bib
     out_dir = input('Directorio de salida (por defecto reports): ').strip() or 'reports'
     use_crossref = input('Usar Crossref para resolver países? [Y/n]: ').strip().lower() != 'n'
 

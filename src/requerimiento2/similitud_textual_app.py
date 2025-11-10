@@ -1,6 +1,6 @@
 # Similitud textual - Streamlit app
 # Requerimiento 2: Implementar 4 algoritmos clásicos y 2 basados en modelos IA.
-# Uso: guardar este archivo en tu repo y ejecutar: streamlit run similitud_textual_app.py
+# Uso: streamlit run src/requerimiento2/similitud_textual_app.py
 # Requisitos pip (instala en tu venv):
 # pip install streamlit bibtexparser scikit-learn pandas numpy sentence-transformers rapidfuzz
 
@@ -10,11 +10,15 @@ from bibtexparser.bparser import BibTexParser
 from bibtexparser.customization import author
 import pandas as pd
 import numpy as np
+from pathlib import Path
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 from rapidfuzz.distance import Levenshtein
 from io import StringIO
+
+# Calcular la ruta raíz del proyecto
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 st.set_page_config(page_title='Análisis similitud textual', layout='wide')
 
@@ -22,7 +26,7 @@ st.title('Análisis de similitud textual — Requerimiento 2')
 st.markdown('Este app permite seleccionar artículos desde un archivo .bib, extraer los abstracts y comparar similitud con 4 algoritmos clásicos y 2 modelos de IA (sentence-transformers).')
 
 # Sidebar: path al archivo .bib
-default_bib_path = 'data/processed/unified_references.bib'
+default_bib_path = str(PROJECT_ROOT / 'data/processed/unified_references.bib')
 path = st.sidebar.text_input('Ruta del archivo .bib (path)', value=default_bib_path)
 
 @st.cache_data

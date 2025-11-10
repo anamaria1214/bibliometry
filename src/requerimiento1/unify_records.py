@@ -4,6 +4,9 @@ import csv
 from pathlib import Path
 from unidecode import unidecode
 
+# Calcular la ruta raíz del proyecto
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+
 # ===========================================================
 # FUNCIONES DE UTILIDAD
 # ===========================================================
@@ -42,7 +45,7 @@ def read_bib_files(input_dirs):
 # ===========================================================
 
 def unify_bib_files():
-    base_path = Path("data")
+    base_path = PROJECT_ROOT / "data"
     output_dir = base_path / "processed"
     log_dir = base_path / "logs"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -50,8 +53,8 @@ def unify_bib_files():
 
     # Carpetas de entrada (ajústalas si tus datos están en otra ruta)
     input_dirs = [
-        "data/raw/IEEE",
-        "data/raw/SemanticScholar",
+        PROJECT_ROOT / "data/raw/IEEE",
+        PROJECT_ROOT / "data/raw/SemanticScholar",
     ]
 
     print("Leyendo archivos .bib...")

@@ -3,6 +3,9 @@ from pathlib import Path
 import pandas as pd
 from .utils import extract_field, normalize_author_field, extract_first_author
 
+# Calcular la ruta raíz del proyecto
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+
 
 def parse_bib_file(bib_path: Path) -> pd.DataFrame:
     """Parsea un archivo .bib y retorna un DataFrame con campos clave.
@@ -54,7 +57,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Parse .bib into a metadata CSV')
     parser.add_argument('-i', '--input', required=True, help='Path to unified_references.bib')
-    parser.add_argument('-o', '--output', default='data/analysis/metadata.csv', help='Output CSV path')
+    parser.add_argument('-o', '--output', default=str(PROJECT_ROOT / 'data/analysis/metadata.csv'), help='Output CSV path')
     args = parser.parse_args()
 
     bib = Path(args.input)

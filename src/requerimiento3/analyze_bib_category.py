@@ -26,8 +26,10 @@ from unidecode import unidecode
 # Configuración / Semillas
 # --------------------------
 
-BIB_PATH = Path(r"data/processed/unified_references.bib")
-OUTPUT_DIR = Path("data/analysis")
+# Calcular la ruta raíz del proyecto (2 niveles arriba desde este archivo)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+BIB_PATH = PROJECT_ROOT / "data/processed/unified_references.bib"
+OUTPUT_DIR = PROJECT_ROOT / "data/analysis"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 CATEGORY_NAME = "Concepts of Generative AI in Education"

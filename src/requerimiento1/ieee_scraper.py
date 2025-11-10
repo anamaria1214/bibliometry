@@ -4,6 +4,9 @@ from pathlib import Path
 import time
 import os
 
+# Calcular la ruta raíz del proyecto
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+
 def scrape_ieee_bibtex(page: int, playwright_page, download_dir: Path, output_dir: Path):
     """
     Navegar a IEEE Digital Library, aceptar cookies, seleccionar todos los resultados,
@@ -119,8 +122,8 @@ def main():
     Función principal para ejecutar el scraper
     """
     # Configurar directorios
-    download_dir = Path("downloads").resolve()
-    output_dir = Path("data/raw/IEEE")
+    download_dir = (PROJECT_ROOT / "downloads").resolve()
+    output_dir = PROJECT_ROOT / "data/raw/IEEE"
     download_dir.mkdir(parents=True, exist_ok=True)
     output_dir.mkdir(parents=True, exist_ok=True)
     

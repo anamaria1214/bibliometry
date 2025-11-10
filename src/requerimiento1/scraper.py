@@ -4,13 +4,16 @@ from pathlib import Path
 import time
 import re
 
+# Calcular la ruta raíz del proyecto
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+
 def download_semantic_scholar(search_query: str = "generative artificial intelligence", max_results: int = 1000):
     """
     Descarga artículos de Semantic Scholar (API pública disponible)
     """
     import requests
     
-    output_dir = Path("data/raw")
+    output_dir = PROJECT_ROOT / "data/raw"
     output_dir.mkdir(parents=True, exist_ok=True)
     
     print(f"{'='*60}")
