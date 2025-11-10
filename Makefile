@@ -263,6 +263,13 @@ info: ## Muestra información detallada de argumentos por módulo
 	@echo ""
 	@echo "$(BLUE)═══════════════════════════════════════════════════════════════════$(NC)"
 
+##@ Ejecutar Streamlit
+
+run: ## Ejecuta la aplicación Streamlit (app.py)
+	@echo "$(GREEN)🚀 Iniciando Streamlit App...$(NC)"
+	@echo "$(BLUE)📡 Abriendo http://localhost:8501$(NC)"
+	streamlit run app.py
+
 ##@ Limpieza de Datos
 
 clean-logs: ## Elimina logs temporales

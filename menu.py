@@ -40,9 +40,11 @@ def print_menu():
     print("  5.  Visualizaciones")
     print("      → Mapa de calor, nube de palabras, línea temporal")
     print()
-    print("  6.  Dashboard Streamlit (en desarrollo)")
+    print("  6.  Dashboard Streamlit")
+    print("      → Interfaz web unificada con navegación")
     print()
-    print("  7.  Sistema de recomendación (en desarrollo)")
+    print("  7.  Sistema de recomendación híbrido")
+    print("      → Sentence-BERT 70% + Jaccard 30%")
     print()
     print("-" * 70)
     print("  0.  Salir")
@@ -169,6 +171,75 @@ def run_requerimiento5():
     input("\nPresione Enter para continuar...")
 
 
+def run_requerimiento6():
+    """Ejecuta el dashboard Streamlit"""
+    print("\n" + "=" * 70)
+    print("REQUERIMIENTO 6: Dashboard Streamlit")
+    print("=" * 70)
+    print("\n[info] Iniciando dashboard de Streamlit...")
+    print("[info] Se abrirá en tu navegador automáticamente en http://localhost:8501")
+    print("\n[tip] Para detener el servidor presiona Ctrl+C")
+    
+    try:
+        os.chdir(Path(__file__).parent)
+        os.system("streamlit run app.py")
+    except Exception as e:
+        print(f"[error] Error: {e}")
+        print("[info]  Por favor ejecute manualmente: streamlit run app.py")
+    
+    input("\nPresione Enter para continuar...")
+
+
+def run_requerimiento7():
+    """Ejecuta el sistema de recomendación"""
+    print("\n" + "=" * 70)
+    print("REQUERIMIENTO 7: Sistema de Recomendación Híbrido")
+    print("=" * 70)
+    print("\n[info] Sistema que combina:")
+    print("  • 70% Similitud Semántica (Sentence-BERT)")
+    print("  • 30% Similitud de Keywords (Jaccard)")
+    
+    print("\nOpciones:")
+    print("  1. Obtener recomendaciones (modo CLI)")
+    print("  2. Abrir interfaz web (Streamlit)")
+    print("  0. Volver")
+    
+    choice = input("\nSeleccione una opción: ").strip()
+    
+    if choice == "1":
+        try:
+            article_index = input("\nÍndice del artículo base [0]: ").strip()
+            article_index = int(article_index) if article_index else 0
+            
+            num_recs = input("Número de recomendaciones [5]: ").strip()
+            num_recs = int(num_recs) if num_recs else 5
+            
+            print(f"\n[info] Generando {num_recs} recomendaciones para artículo #{article_index}...")
+            
+            from src.requerimiento7 import main as rec_main
+            rec_main(['--article-index', str(article_index), 
+                     '--num-recommendations', str(num_recs)])
+            
+        except Exception as e:
+            print(f"[error] Error: {e}")
+            print("[info]  Asegúrate de haber ejecutado primero Visualizaciones para generar metadata.csv")
+    
+    elif choice == "2":
+        print("\n[info] Abriendo interfaz web...")
+        try:
+            os.chdir(Path(__file__).parent)
+            os.system("streamlit run app.py")
+        except Exception as e:
+            print(f"[error] Error: {e}")
+    
+    elif choice == "0":
+        return
+    else:
+        print("[error] Opción no válida")
+    
+    input("\nPresione Enter para continuar...")
+
+
 def main():
     """Función principal del menú"""
     while True:
@@ -188,13 +259,9 @@ def main():
         elif choice == "5":
             run_requerimiento5()
         elif choice == "6":
-            print("\n[warn]  Dashboard Streamlit en desarrollo")
-            print("[info]  Próximamente disponible")
-            input("\nPresione Enter para continuar...")
+            run_requerimiento6()
         elif choice == "7":
-            print("\n[warn]  Sistema de recomendación en desarrollo")
-            print("[info]  Próximamente disponible")
-            input("\nPresione Enter para continuar...")
+            run_requerimiento7()
         elif choice == "0":
             print("\n¡Hasta pronto!")
             print("=" * 70 + "\n")

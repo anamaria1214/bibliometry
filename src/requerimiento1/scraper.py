@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 import time
 import re
+import random
 
 # Calcular la ruta raíz del proyecto
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -25,9 +26,27 @@ def download_semantic_scholar(search_query: str = "generative artificial intelli
     limit = 100
     
     try:
+        def fetch_with_retries(url, params, max_retries=5):
+            attempt = 0
+            while attempt <= max_retries:
+                resp = requests.get(url, params=params)
+                if resp.status_code == 200:
+                    return resp
+                # Retry on 429 (rate limit) or 5xx server errors
+                if resp.status_code == 429 or 500 <= resp.status_code < 600:
+                    backoff = (2 ** attempt) + random.uniform(0, 1)
+                    print(f"✗ API returned {resp.status_code}. Retry in {backoff:.1f}s (attempt {attempt+1}/{max_retries})")
+                    time.sleep(backoff)
+                    attempt += 1
+                    continue
+                # Other errors -> return None
+                print(f"✗ Error en API: {resp.status_code}")
+                return None
+            return None
+
         while len(all_papers) < max_results:
             print(f"Solicitando papers (offset: {offset})...")
-            
+
             url = "https://api.semanticscholar.org/graph/v1/paper/search"
             params = {
                 'query': search_query,
@@ -35,26 +54,26 @@ def download_semantic_scholar(search_query: str = "generative artificial intelli
                 'limit': limit,
                 'fields': 'title,authors,year,venue,citationCount,abstract,externalIds'
             }
-            
-            response = requests.get(url, params=params)
-            
-            if response.status_code != 200:
-                print(f"✗ Error en API: {response.status_code}")
+
+            response = fetch_with_retries(url, params)
+            if response is None:
+                print("✗ No se pudo obtener respuesta de la API tras reintentos. Abortando descarga.")
                 break
-            
+
             data = response.json()
-            papers = data.get('data', [])
-            
+            papers = data.get('data', []) if isinstance(data, dict) else []
+
             if not papers:
                 print("✗ No hay más resultados")
                 break
-            
+
             all_papers.extend(papers)
             print(f"  ✓ Obtenidos {len(papers)} papers (Total: {len(all_papers)})")
-            
+
             offset += limit
-            time.sleep(1)  # Respetar rate limit
-            
+            # Back off a bit (could be tuned)
+            time.sleep(1 + random.uniform(0, 1))  # Respetar rate limit
+
             if len(all_papers) >= max_results:
                 all_papers = all_papers[:max_results]
                 break
@@ -68,41 +87,57 @@ def download_semantic_scholar(search_query: str = "generative artificial intelli
         
         for i, paper in enumerate(all_papers):
             try:
-                # Generar citation key
-                first_author = paper.get('authors', [{}])[0].get('name', 'Unknown').split()[-1]
-                year = paper.get('year', 'n.d.')
+                # Generar citation key (proteger contra nombres vacíos)
+                authors_list = paper.get('authors') or []
+                if authors_list and isinstance(authors_list, list):
+                    first_name = authors_list[0].get('name') or ''
+                    name_tokens = first_name.split()
+                    first_author = name_tokens[-1] if name_tokens else 'Unknown'
+                else:
+                    first_author = 'Unknown'
+
+                year = paper.get('year') or 'n.d.'
                 citation_key = f"{first_author}{year}_{i}"
-                
+
                 # Crear entrada BibTeX
-                title = paper.get('title', 'Untitled').replace('{', '').replace('}', '')
-                authors = ' and '.join([a.get('name', '') for a in paper.get('authors', [])])
-                venue = paper.get('venue', 'Unknown')
-                abstract = paper.get('abstract', '')
-                
+                title = (paper.get('title') or 'Untitled').replace('{', '').replace('}', '')
+                authors = ' and '.join([a.get('name', '') for a in authors_list])
+                venue = paper.get('venue') or 'Unknown'
+                abstract = paper.get('abstract') or ''
+
                 # Determinar tipo (article o inproceedings)
-                entry_type = 'inproceedings' if 'conference' in venue.lower() or 'proceedings' in venue.lower() else 'article'
-                
+                try:
+                    venue_lower = venue.lower()
+                except Exception:
+                    venue_lower = ''
+                entry_type = 'inproceedings' if 'conference' in venue_lower or 'proceedings' in venue_lower else 'article'
+
                 bibtex_entry = f"@{entry_type}{{{citation_key},\n"
                 bibtex_entry += f"  title = {{{title}}},\n"
                 bibtex_entry += f"  author = {{{authors}}},\n"
                 bibtex_entry += f"  year = {{{year}}},\n"
-                
+
                 if entry_type == 'article':
                     bibtex_entry += f"  journal = {{{venue}}},\n"
                 else:
                     bibtex_entry += f"  booktitle = {{{venue}}},\n"
-                
+
                 if abstract:
                     bibtex_entry += f"  abstract = {{{abstract}}},\n"
-                
-                # Agregar DOI si existe
-                external_ids = paper.get('externalIds', {})
-                if 'DOI' in external_ids:
-                    bibtex_entry += f"  doi = {{{external_ids['DOI']}}},\n"
-                
+
+                # Agregar DOI si existe (case-insensitive)
+                external_ids = paper.get('externalIds') or {}
+                doi = None
+                for k, v in external_ids.items():
+                    if k.lower() == 'doi' and v:
+                        doi = v
+                        break
+                if doi:
+                    bibtex_entry += f"  doi = {{{doi}}},\n"
+
                 bibtex_entry += "}\n\n"
                 bibtex_content += bibtex_entry
-                
+
             except Exception as e:
                 print(f"  ✗ Error procesando paper {i}: {e}")
                 continue
