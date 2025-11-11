@@ -59,7 +59,6 @@ COPY requirements.txt ./
 # Usar --extra-index-url para PyTorch CPU-only (reduce tamaño de imagen)
 RUN pip install --upgrade pip setuptools wheel && \
     pip install -r requirements.txt \
-    --extra-index-url https://download.pytorch.org/whl/cpu \
     
 
 # Instalar navegadores de Playwright (solo Chromium para reducir tamaño)
