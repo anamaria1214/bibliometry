@@ -53,7 +53,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar archivos de requisitos
-COPY requirements.txt constraints.txt ./
+COPY requirements.txt ./
 
 # Instalar dependencias de Python
 # Usar --extra-index-url para PyTorch CPU-only (reduce tamaño de imagen)
