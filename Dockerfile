@@ -53,14 +53,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar archivos de requisitos
-COPY requirements.txt constraints.txt ./
+COPY requirements.txt ./
 
 # Instalar dependencias de Python
 # Usar --extra-index-url para PyTorch CPU-only (reduce tamaño de imagen)
 RUN pip install --upgrade pip setuptools wheel && \
     pip install -r requirements.txt \
-    --extra-index-url https://download.pytorch.org/whl/cpu \
-    -c constraints.txt
+    
 
 # Instalar navegadores de Playwright (solo Chromium para reducir tamaño)
 RUN playwright install chromium && \
