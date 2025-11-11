@@ -149,7 +149,7 @@ def load_metadata() -> pd.DataFrame:
     # Rellenar NaN con strings vacíos
     df['title'] = df['title'].fillna('')
     df['abstract'] = df['abstract'].fillna('')
-    df['author'] = df['author'].fillna('Desconocido')
+    df['authors_raw'] = df['authors_raw'].fillna('Desconocido')
     df['year'] = df['year'].fillna(0)
     
     return df
@@ -282,7 +282,7 @@ def get_recommendations(
         results.append({
             'index': idx,
             'title': df.iloc[idx]['title'],
-            'author': df.iloc[idx]['author'],
+            'author': df.iloc[idx]['authors_raw'],
             'year': int(df.iloc[idx]['year']) if df.iloc[idx]['year'] > 0 else 'N/A',
             'abstract': df.iloc[idx]['abstract'],
             'hybrid_score': float(hybrid_scores[i]),
